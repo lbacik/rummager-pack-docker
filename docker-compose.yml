@@ -1,0 +1,84 @@
+version: '2'
+
+networks:
+
+  rum-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: ${NETWORK_ADDRESS}.0/24
+          gateway: ${NETWORK_ADDRESS}.1
+          ip_range: ${NETWORK_ADDRESS}.128/25
+
+services:
+
+  rum-mysql:
+    image: percona
+    container_name: rum-mysql
+    networks: 
+      rum-net:
+        aliases:
+         - mysql.${DOMAIN_NAME}
+        ipv4_address: ${NETWORK_ADDRESS}.${HOST_IP_MYSQL}
+    ports:
+      - "${LOCALHOST}:3306:3306/tcp"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+
+  rum-tech:
+    build: ./images/tech
+    image: rummager-tech
+    container_name: rum-tech
+    networks:
+      rum-net:
+        ipv4_address: ${NETWORK_ADDRESS}.${HOST_IP_TECH}
+    volumes:
+      - .:/project
+    stdin_open: true
+    tty: true
+
+  rum-smtp:
+    build: ./images/smtp
+    image: rummager-smtp
+    container_name: rum-smtp
+    networks:
+      rum-net:
+        ipv4_address: ${NETWORK_ADDRESS}.${HOST_IP_SMTP}
+    cap_add:
+      - NET_ADMIN
+
+  rum-rumsrv:
+    build: ./images/service
+    image: rummager-service
+    container_name: rum-rumsrv
+    volumes:
+      - ${SRC_RUMSRV}:/project/rumsrv
+    networks:
+      rum-net:
+        aliases:
+         - rumsrv.${DOMAIN_NAME}
+         - rumsrv.local
+        ipv4_address: ${NETWORK_ADDRESS}.${HOST_IP_RUMSRV}
+    ports:
+      - "${LOCALHOST}:80:80/tcp"      
+    depends_on:
+      - rum-mysql
+
+  rum-worker:
+    build: ./images/worker
+    image: rummager-worker
+    container_name: rum-worker
+    volumes:
+      - ${SRC_RUMMAGER}:/project/rummager
+    networks: 
+      - rum-net
+    stdin_open: true
+    tty: true
+    cap_add:
+      - NET_ADMIN
+    mem_limit: 1024m
+    stdin_open: true
+    tty: true
+    depends_on:
+      - rum-rumsrv
+      - rum-smtp

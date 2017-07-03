@@ -13,7 +13,7 @@ networks:
 services:
 
   rum-mysql:
-    image: percona
+    image: mysql:5
     container_name: rum-mysql
     networks: 
       rum-net:
@@ -77,8 +77,6 @@ services:
     cap_add:
       - NET_ADMIN
     mem_limit: 1024m
-    stdin_open: true
-    tty: true
     depends_on:
       - rum-rumsrv
       - rum-smtp

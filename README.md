@@ -45,7 +45,7 @@ Instead of invoking commands from points 2 to 5 manually you can run:
 
     $ sudo bin/setup.sh
 
-## after setup is complete
+## after setup complete
 
 
     $ sudo docker-compose up -d rum-worker

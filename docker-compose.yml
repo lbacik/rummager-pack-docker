@@ -21,7 +21,7 @@ services:
          - mysql.${DOMAIN_NAME}
         ipv4_address: ${NETWORK_ADDRESS}.${HOST_IP_MYSQL}
     ports:
-      - "${LOCALHOST}:3306:3306/tcp"
+      - ${LOCALHOST}:3306:3306/tcp
     environment:
       MYSQL_ROOT_PASSWORD: root
 
@@ -33,7 +33,7 @@ services:
       rum-net:
         ipv4_address: ${NETWORK_ADDRESS}.${HOST_IP_TECH}
     volumes:
-      - .:/project
+      - ${RUMMAGER_PACK_DIR}:/project
     stdin_open: true
     tty: true
 
@@ -52,7 +52,7 @@ services:
     image: rummager-service
     container_name: rum-rumsrv
     volumes:
-      - ${SRC_RUMSRV}:/project/rumsrv
+      - ${RUMMAGER_PACK_DIR}/${SRC_RUMSRV}:/project/rumsrv
     networks:
       rum-net:
         aliases:
@@ -60,7 +60,7 @@ services:
          - rumsrv.local
         ipv4_address: ${NETWORK_ADDRESS}.${HOST_IP_RUMSRV}
     ports:
-      - "${LOCALHOST}:80:80/tcp"      
+      - ${LOCALHOST}:80:80/tcp
     depends_on:
       - rum-mysql
 
@@ -69,7 +69,7 @@ services:
     image: rummager-worker
     container_name: rum-worker
     volumes:
-      - ${SRC_RUMMAGER}:/project/rummager
+      - ${RUMMAGER_PACK_DIR}/${SRC_RUMMAGER}:/project/rummager
     networks: 
       - rum-net
     stdin_open: true

@@ -73,6 +73,9 @@ services:
       - ${RUMMAGER_PACK_DIR}/${SRC_RUMMAGER}:/project/rummager
     networks: 
       - rum-net
+    environment:
+      RUMMAGER_LOGDIR: logs
+      RUMMAGER_SOAPURL: https://rumsrv.local/soap.php?WSDL&readable
     stdin_open: true
     tty: true
     cap_add:

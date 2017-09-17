@@ -61,6 +61,7 @@ services:
         ipv4_address: ${NETWORK_ADDRESS}.${HOST_IP_RUMSRV}
     ports:
       - ${LOCALHOST}:80:80/tcp
+      - ${LOCALHOST}:443:443/tcp
     depends_on:
       - rum-mysql
 

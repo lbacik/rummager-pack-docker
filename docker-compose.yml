@@ -74,8 +74,9 @@ services:
     networks: 
       - rum-net
     environment:
-      RUMMAGER_LOGDIR: logs
-      RUMMAGER_SOAPURL: https://rumsrv.local/soap.php?WSDL&readable
+      RUMMAGER_LOG_TYPE: stdout
+      RUMMAGER_SOAPURL: http://rumsrv.local/soap.php?WSDL&readable
+      RUMMAGER_SOAPURL_SENDER: http://rumsrv.local/soap-sender.php?WSDL&readable
     stdin_open: true
     tty: true
     cap_add:

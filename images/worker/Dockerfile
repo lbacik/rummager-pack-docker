@@ -1,19 +1,15 @@
-FROM python:3
+FROM resin/rpi-raspbian:jessie
 
-RUN apt-get -y update
-RUN apt-get -y install htop
+RUN apt-get -y update \
+	&& apt-get -y install iptables htop python3 python3-pip \
+	&& rm -rf /var/lib/apt/lists/*
 
 COPY ./conf/iptables.sav /usr/local/etc/
 COPY ./conf/start.sh /usr/local/bin/
 
-RUN apt-get -y install iptables
+RUN pip3 install suds-jurko \
+	&& pip3 install netaddr
 
 WORKDIR /project/rummager
-
-# unfortunately we cannot use here command like:
-#RUN pip install -r ../src/rummager/requirements.txt
-
-RUN pip install suds-jurko
-RUN pip install netaddr
 
 CMD ["/bin/bash", "-c", "/usr/local/bin/start.sh"]

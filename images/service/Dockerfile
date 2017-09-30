@@ -1,5 +1,5 @@
 
-FROM php:5-apache
+FROM rpi-php:5.6-apache
 
 RUN apt-get -y update
 RUN apt-get -y install libxml2-dev openssl ssl-cert

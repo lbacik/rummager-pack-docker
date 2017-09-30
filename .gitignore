@@ -1,2 +1,4 @@
 src/*
 !src/.gitkeep
+images/rpi-php-apache/Dockerfile
+images/rpi-php-apache/php

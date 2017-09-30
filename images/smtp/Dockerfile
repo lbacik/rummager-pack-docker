@@ -1,5 +1,5 @@
 
-FROM tozd/postfix
+FROM postfix:build
 
 RUN apt-get -y update
 RUN apt-get -y install iptables

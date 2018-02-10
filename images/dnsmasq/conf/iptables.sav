@@ -1,0 +1,7 @@
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+-A OUTPUT -d 192.168.65.1/32 -p tcp -m tcp --dport 53 -j REJECT --reject-with icmp-port-unreachable
+-A OUTPUT -d 192.168.65.1/32 -p udp -m udp --dport 53 -j REJECT --reject-with icmp-port-unreachable
+COMMIT

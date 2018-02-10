@@ -6,24 +6,45 @@ networks:
     driver: bridge
     ipam:
       config:
-        - subnet: ${NETWORK_ADDRESS}.0/24
-          gateway: ${NETWORK_ADDRESS}.1
-          ip_range: ${NETWORK_ADDRESS}.128/25
+        - subnet: "${NETWORK_ADDRESS}.0/24"
+          gateway: "${NETWORK_ADDRESS}.1"
+          ip_range: "${NETWORK_ADDRESS}.128/25"
+
+volumes:
+
+  portainer-data:
+    driver: local
 
 services:
 
-  rum-mysql:
+  mysql:
     image: mysql:5
     container_name: rum-mysql
     networks: 
       rum-net:
         aliases:
-         - mysql.${DOMAIN_NAME}
-        ipv4_address: ${NETWORK_ADDRESS}.${HOST_IP_MYSQL}
-    ports:
-      - "${LOCALHOST}:3306:3306/tcp"
+         - "mysql.${DOMAIN}"
+        ipv4_address: "${NETWORK_ADDRESS}.${HOST_IP_MYSQL}"
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+
+  dev-mysql:
+    extends: 
+      service: mysql
+    ports:
+      - "${HOST_NET_ADDR}:3306:3306/tcp"
+
+  dev-mysql55:
+    image: mysql:5.5
+    container_name: rum-mysql55
+    networks: 
+      rum-net:
+        aliases:
+         - "mysql55.${DOMAIN}"
+    ports:
+      - "${HOST_NET_ADDR}:3316:3306/tcp"
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
 
   rum-tech:
     build: ./images/tech
@@ -31,46 +52,57 @@ services:
     container_name: rum-tech
     networks:
       rum-net:
-        ipv4_address: ${NETWORK_ADDRESS}.${HOST_IP_TECH}
+        ipv4_address: "${NETWORK_ADDRESS}.${HOST_IP_TECH}"
     volumes:
-      - ${RUMMAGER_PACK_DIR}:/project
+      - "${RUMMAGER_PACK_DIR}:/project"
     stdin_open: true
     tty: true
 
-  rum-smtp:
+  tech:
+    build: ./images/tech9
+    image: rummager-tech9
+    container_name: rum-tech9
+    networks:
+      - rum-net
+    volumes:
+      - "${RUMMAGER_PACK_DIR}:/project"
+    stdin_open: true
+    tty: true
+
+  dev-smtp:
     build: ./images/smtp
     image: rummager-smtp
     container_name: rum-smtp
     networks:
       rum-net:
-        ipv4_address: ${NETWORK_ADDRESS}.${HOST_IP_SMTP}
+        ipv4_address: "${NETWORK_ADDRESS}.${HOST_IP_SMTP}"
     cap_add:
       - NET_ADMIN
 
-  rum-rumsrv:
+  dev-rumsrv:
     build: ./images/service
     image: rummager-service
     container_name: rum-rumsrv
     volumes:
-      - ${RUMMAGER_PACK_DIR}/${SRC_RUMSRV}:/project/rumsrv
+      - "${RUMMAGER_PACK_DIR}/${SRC_RUMSRV}:/project/rumsrv"
     networks:
       rum-net:
         aliases:
-         - rumsrv.${DOMAIN_NAME}
-         - rumsrv.local
-        ipv4_address: ${NETWORK_ADDRESS}.${HOST_IP_RUMSRV}
+         - "rumsrv.${DOMAIN}"
+         - "rumsrv.local"
+        ipv4_address: "${NETWORK_ADDRESS}.${HOST_IP_RUMSRV}"
     ports:
-      - "${LOCALHOST}:80:80/tcp"
-      - "${LOCALHOST}:443:443/tcp"
+      - "${HOST_NET_ADDR}:80:80/tcp"
+      - "${HOST_NET_ADDR}:443:443/tcp"
     depends_on:
-      - rum-mysql
+      - dev-mysql
 
-  rum-worker:
+  dev-worker:
     build: ./images/worker
     image: rummager-worker
     container_name: rum-worker
     volumes:
-      - ${RUMMAGER_PACK_DIR}/${SRC_RUMMAGER}:/project/rummager
+      - "${RUMMAGER_PACK_DIR}/${SRC_RUMMAGER}:/project/rummager"
     networks: 
       - rum-net
     environment:
@@ -83,8 +115,8 @@ services:
       - NET_ADMIN
     mem_limit: 1024m
     depends_on:
-      - rum-rumsrv
-      - rum-smtp
+      - dev-rumsrv
+      - dev-smtp
 
   docker-image-builder:
     image: lbacik/docker-image-builder
@@ -95,3 +127,45 @@ services:
       - "${DOCKER_SOCKET}:/var/run/docker.sock"
     networks:
       - rum-net
+
+  dns:
+    build: ./images/dnsmasq
+    image: rum-dns
+    container_name: rum-dns
+    networks:
+      rum-net:
+        aliases:
+          - dns.${DOMAIN}
+    volumes:
+      - "${RUMMAGER_PACK_DIR}/etc/dnsmasq:/usr/local/etc/dnsmasq"
+    ports:
+      - "${HOST_NET_ADDR}:53:53/udp"     
+      - "${HOST_NET_ADDR}:53:53/tcp"     
+    cap_add:
+      - NET_ADMIN
+
+  vpn:
+    build: ./images/vpn
+    image: rum-vpn
+    container_name: rum-vpn
+    networks:
+      rum-net:
+        aliases:
+          - vpn.${DOMAIN}
+    ports: 
+      - "${HOST_NET_ADDR}:1194:1194/udp"
+    volumes:
+      - "${RUMMAGER_PACK_DIR}/etc/openvpn:/etc/openvpn"
+    cap_add:
+      - NET_ADMIN
+
+  portainer:
+    image: portainer/portainer
+    container_name: portainer
+    volumes:
+      - portainer-data:/data
+      - ${DOCKER_SOCKET}:/var/run/docker.sock
+    networks:
+      rum-net:
+        aliases:
+          - portainer.${DOMAIN}

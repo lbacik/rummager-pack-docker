@@ -2,8 +2,6 @@
 
  . ./.env
  
-#OVPN_DATA=${COMPOSE_PROJECT_NAME}_ovpn-data
-
 OVPN_DATA=${RUMMAGER_PACK_DIR}/etc/openvpn
 
 docker run -v $OVPN_DATA:/etc/openvpn --rm kylemanna/openvpn ovpn_genconfig -u udp://vpn.${DOMAIN}

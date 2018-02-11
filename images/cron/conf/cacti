@@ -1,0 +1,6 @@
+
+docker run --rm \
+	--net rummager_rum-net \
+	-v rummager_cacti-rra:/var/lib/cacti/rra \
+	rum-cacti \
+	sh -c 'sudo -u www-data php --define suhosin.memory_limit=512M /usr/share/cacti/site/poller.php'

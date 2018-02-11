@@ -15,6 +15,9 @@ volumes:
   portainer-data:
     driver: local
 
+  cacti-rra:
+    driver: local
+
 services:
 
   mysql:
@@ -169,3 +172,40 @@ services:
       rum-net:
         aliases:
           - portainer.${DOMAIN}
+
+  ssh-passthrough:
+    image: lbacik/ssh-passthrough
+    container_name: rum-ssh-passthrough
+    networks:
+      - rum-net
+    ports:
+      - "${HOST_NET_ADDR}:2222:22/tcp"
+    volumes:
+      - "${DOCKER_SOCKET}:/var/run/docker.sock"
+      - "${RUMMAGER_PACK_DIR}/etc/sshpassthrough/authorizedkeys:/project/authorizedkeys"      
+    environment:
+      AUTH_METHOD: publickey
+      AUTHORIZED_KEYS: /project/authorizedkeys
+      SHELL: bash
+
+  cacti:
+    build: ./images/cacti
+    image: rum-cacti
+    container_name: rum-cacti
+    networks:
+      rum-net:
+        aliases:
+          - cacti.${DOMAIN}
+    volumes:
+      - "cacti-rra:/var/lib/cacti/rra"
+    environment:
+      VIRTUAL_HOST: "cacti.proxy.${DOMAIN}"
+
+  cron:
+    build: ./images/cron
+    image: rum-cron
+    container_name: rum-cron
+    networks:
+      - rum-net
+    volumes:
+      - "${DOCKER_SOCKET}:/var/run/docker.sock"

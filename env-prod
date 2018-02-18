@@ -3,16 +3,21 @@ COMPOSE_PROJECT_NAME=rummager
 
 # network
 NETWORK_ADDRESS=172.27.2
-DOMAIN_NAME=
+DOMAIN=
 
-LOCALHOST=
+DOCKER_SOCKET=/var/run/docker.sock
+
+HOST_NET_ADDR=
 
 # Path to the main directory of this project (where you can find this file)
 # change it accordingly when you use docker remotely (using for instance docker-machine)
 RUMMAGER_PACK_DIR=/usr/local/project
 
+DOCKER_IMAGES_BUILDS=/usr/local/project/src/docker-images-builds
+
 HOST_IP_TECH=10
 HOST_IP_SMTP=12
+HOST_IP_DNS=14
 
 HOST_IP_MYSQL=30
 HOST_IP_RUMSRV=31
@@ -21,3 +26,4 @@ HOST_IP_RUMSRV=31
 SRC_RUMMAGER=src/rummager
 SRC_RUMSRV=src/rummager-service
 
+MYSQL_ROOT_PASSWORD=root

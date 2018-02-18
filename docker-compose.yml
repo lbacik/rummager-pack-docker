@@ -209,3 +209,13 @@ services:
       - rum-net
     volumes:
       - "${DOCKER_SOCKET}:/var/run/docker.sock"
+
+  docker-image-builder:
+    image: lbacik/docker-image-builder
+    container_name: docker-image-builder
+    volumes:
+      - "${RUMMAGER_PACK_DIR}:/project"
+      - "${DOCKER_IMAGES_BUILDS}:/docker-images-builds"
+      - "${DOCKER_SOCKET}:/var/run/docker.sock"
+    networks:
+      - rum-net

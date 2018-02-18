@@ -21,7 +21,7 @@ services:
          - mysql.${DOMAIN_NAME}
         ipv4_address: ${NETWORK_ADDRESS}.${HOST_IP_MYSQL}
     ports:
-      - ${LOCALHOST}:3306:3306/tcp
+      - "${LOCALHOST}:3306:3306/tcp"
     environment:
       MYSQL_ROOT_PASSWORD: root
 
@@ -60,8 +60,8 @@ services:
          - rumsrv.local
         ipv4_address: ${NETWORK_ADDRESS}.${HOST_IP_RUMSRV}
     ports:
-      - ${LOCALHOST}:80:80/tcp
-      - ${LOCALHOST}:443:443/tcp
+      - "${LOCALHOST}:80:80/tcp"
+      - "${LOCALHOST}:443:443/tcp"
     depends_on:
       - rum-mysql
 
@@ -85,3 +85,13 @@ services:
     depends_on:
       - rum-rumsrv
       - rum-smtp
+
+  docker-image-builder:
+    image: lbacik/docker-image-builder
+    container_name: docker-image-builder
+    volumes:
+      - "${RUMMAGER_PACK_DIR}:/project"
+      - "${DOCKER_IMAGES_BUILDS}:/docker-images-builds"
+      - "${DOCKER_SOCKET}:/var/run/docker.sock"
+    networks:
+      - rum-net

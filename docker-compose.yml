@@ -30,6 +30,8 @@ services:
         ipv4_address: "${NETWORK_ADDRESS}.${HOST_IP_MYSQL}"
     environment:
       MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+    volumes:
+      - "${RUMMAGER_PACK_DIR}/etc/mysql:/etc/mysql/conf.d"
 
   dev-mysql:
     extends: 

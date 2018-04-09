@@ -1,0 +1,6 @@
+echo 'cron 1w'
+docker run --rm \
+	--net rummager_rum-net \
+	-v ${PROJECT}.${BRANCH}:/usr/local/project \
+	${PROJECT}:${TAG} \
+	sh -c 'cd /usr/local/project/cron && php cron-weekly.php'

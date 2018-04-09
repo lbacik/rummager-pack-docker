@@ -139,6 +139,7 @@ services:
       rum-net:
         aliases:
           - dns.${DOMAIN}
+        ipv4_address: "${NETWORK_ADDRESS}.${HOST_IP_DNS}"
     volumes:
       - "${RUMMAGER_PACK_DIR}/etc/dnsmasq:/usr/local/etc/dnsmasq"
     ports:
@@ -219,3 +220,14 @@ services:
       - "${DOCKER_SOCKET}:/var/run/docker.sock"
     networks:
       - rum-net
+
+  proxy:
+    image: jwilder/nginx-proxy
+    container_name: rum-proxy
+    networks:
+      - rum-net
+    ports:
+      - "${HOST_NET_ADDR}:80:80/tcp"
+      - "${HOST_NET_ADDR}:443:443/tcp"
+    volumes:
+      - "${DOCKER_SOCKET}:/tmp/docker.sock:ro"

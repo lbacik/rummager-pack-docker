@@ -29,19 +29,21 @@ source ${SCRIPT_DIR}/../.env
 PROJECT="rumsrv"
 DOCKER_DIR="${SCRIPT_DIR}/.."
 IMAGES="${DOCKER_DIR}/images"
-TEMPLATES="/docker-images-builds/templates"
+TEMPLATES="${DOCKER_DIR}/src/docker-images-builds/templates"
 PROJECT_DIR="/usr/local/project"
 
-SITE_NAME="${DOMAIN}"
+SITE_NAME="${PROJECT}.${DOMAIN}"
 IMAGE_NAME="${PROJECT}:${BRANCH}"
+SITE_ALIAS="${PROJECT}.proxy.${DOMAIN}"
 
 if [ $DEVELOPMENT -eq 1 ]; then
 
-	SITE_NAME="${BRANCH}.${DOMAIN}"
+	SITE_NAME="${BRANCH}.${PROJECT}.${DOMAIN}"
 	IMAGE_NAME="${PROJECT}:${BRANCH}-dev"
+	SITE_ALIAS="${BRANCH}.${PROJECT}.proxy.${DOMAIN}"
 fi
 
-DOCKER_BUILDER="docker-compose -f ${RUMMAGER_PACK_DIR}/docker-compose.yml run --rm  \
+DOCKER_BUILDER="docker-compose -f ${DOCKER_DIR}/docker-compose.yml run --rm  \
 	docker-image-builder docker-image-builder"
 
 ${DOCKER_BUILDER} ${HOST} \
@@ -51,5 +53,6 @@ ${DOCKER_BUILDER} ${HOST} \
 	"${IMAGES}/service-base" \
 	"${TEMPLATES}/apache-site" \
 		ARG:PROJECT_DOMAIN="${SITE_NAME}" \
+		ARG:PROJECT_ALIASES="${SITE_ALIAS}" \
 		ARG:PROJECT_DIR="${PROJECT_DIR}" \
 		ARG:PROJECT_PUBLIC_DIR="public"

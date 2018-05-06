@@ -1,6 +1,7 @@
-echo 'cron 20min'
+echo 'start: cron 20min'
 docker run --rm \
 	--net rummager_rum-net \
 	-v ${PROJECT}.${BRANCH}:/usr/local/project \
 	${PROJECT}:${TAG} \
 	sh -c 'cd /usr/local/project/cron && php cron-20min.php'
+echo 'end: cron 20min'

@@ -1,0 +1,7 @@
+echo 'start: cron 4h'
+docker run --rm \
+	--net rummager_rum-net \
+	-v ${PROJECT}.${BRANCH}:/usr/local/project \
+	${PROJECT}:${TAG} \
+	sh -c 'cd /usr/local/project/cron && php cron-hourly.php'
+echo 'end: cron 4h'

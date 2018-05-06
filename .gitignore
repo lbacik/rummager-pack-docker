@@ -1,2 +1,6 @@
 src/*
 !src/.gitkeep
+.env
+.env-*
+etc/openvpn
+!etc/openvpn/.gitkeep

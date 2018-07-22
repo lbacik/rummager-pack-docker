@@ -72,6 +72,7 @@ services:
       - rum-net
     volumes:
       - "${RUMMAGER_PACK_DIR}:/project"
+      - "${BACKUP_DIR}:/backups"
     stdin_open: true
     tty: true
 

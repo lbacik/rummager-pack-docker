@@ -13,5 +13,7 @@ RUN apt-get -y update && apt-get -y install \
 #	php5-mysql
 
 COPY ./scripts/createdb.sh /usr/local/bin/
+COPY ./scripts/backupdb.sh /usr/local/bin/
+COPY ./scripts/backup-x.sh /usr/local/bin/
 
 # CMD /bin/bash

@@ -1,0 +1,9 @@
+echo 'start: backupdb'
+
+docker run --rm \
+	--net rummager_rum-net \
+	-v /usr/local/backups:/backups \
+	rummager-tech9 \
+	sh -c '/usr/local/bin/backupdb.sh'
+
+echo 'end: backupdb'

@@ -32,6 +32,7 @@ services:
       MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
     volumes:
       - "${RUMMAGER_PACK_DIR}/etc/mysql:/etc/mysql/conf.d"
+      - "${MYSQL_DATA}:/var/lib/mysql"
 
   dev-mysql:
     extends: 
@@ -71,6 +72,7 @@ services:
       - rum-net
     volumes:
       - "${RUMMAGER_PACK_DIR}:/project"
+      - "${BACKUP_DIR}:/backups"
     stdin_open: true
     tty: true
 
@@ -123,16 +125,6 @@ services:
       - dev-rumsrv
       - dev-smtp
 
-  docker-image-builder:
-    image: lbacik/docker-image-builder
-    container_name: docker-image-builder
-    volumes:
-      - "${RUMMAGER_PACK_DIR}:/project"
-      - "${DOCKER_IMAGES_BUILDS}:/docker-images-builds"
-      - "${DOCKER_SOCKET}:/var/run/docker.sock"
-    networks:
-      - rum-net
-
   dns:
     build: ./images/dnsmasq
     image: rum-dns
@@ -167,7 +159,7 @@ services:
 
   portainer:
     image: portainer/portainer
-    container_name: portainer
+    container_name: rum-portainer
     volumes:
       - portainer-data:/data
       - ${DOCKER_SOCKET}:/var/run/docker.sock

@@ -14,6 +14,6 @@ RUN apt-get -y update && apt-get -y install \
 
 COPY ./scripts/createdb.sh /usr/local/bin/
 COPY ./scripts/backupdb.sh /usr/local/bin/
-COPY ./scripts/backup-x.sh /usr/local/bin/
+COPY ./scripts/backupdb-x.sh /usr/local/bin/
 
 # CMD /bin/bash

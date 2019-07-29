@@ -22,6 +22,7 @@ services:
 
   mysql:
     image: mysql:5
+    restart: always
     container_name: rum-mysql
     networks: 
       rum-net:
@@ -128,6 +129,7 @@ services:
   dns:
     build: ./images/dnsmasq
     image: rum-dns
+    restart: always
     container_name: rum-dns
     networks:
       rum-net:
@@ -145,6 +147,7 @@ services:
   vpn:
     build: ./images/vpn
     image: rum-vpn
+    restart: always
     container_name: rum-vpn
     networks:
       rum-net:
@@ -199,6 +202,7 @@ services:
   cron:
     build: ./images/cron
     image: rum-cron
+    restart: always
     container_name: rum-cron
     networks:
       - rum-net
@@ -217,6 +221,7 @@ services:
 
   proxy:
     image: jwilder/nginx-proxy
+    restart: always
     container_name: rum-proxy
     networks:
       - rum-net

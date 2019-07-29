@@ -8,5 +8,5 @@ DATE=`date +%Y%m%d`
 BACKUP_NAME=${BACKUPDIR}/${DATABASE}-${DATE}
 BACKUP_FILE=${BACKUP_NAME}.sql
 
-mysqldump -h rum-mysql -u root -proot $DATABASE > ${BACKUP_FILE}
+mysqldump -h rum-mysql -u root -proot --routines $DATABASE > ${BACKUP_FILE}
 gzip ${BACKUP_FILE}

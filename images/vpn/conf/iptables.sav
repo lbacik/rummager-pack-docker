@@ -6,5 +6,5 @@
 :POSTROUTING ACCEPT [0:0]
 :DOCKER_OUTPUT - [0:0]
 :DOCKER_POSTROUTING - [0:0]
--A PREROUTING -p tcp -m tcp --dport 9000 -j DNAT --to-destination 192.168.255.6
+# -A PREROUTING -p tcp -m tcp --dport 9000 -j DNAT --to-destination 192.168.255.6
 COMMIT
